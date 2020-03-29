@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package quoil;
+
+service Vactube {
+    rpc TextChat(stream TextMessage) returns (stream TextMessage) {}
+}
+
+message TextMessage {
+    string userName = 1;
+    string messageText = 2;
+}
