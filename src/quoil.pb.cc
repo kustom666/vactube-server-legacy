@@ -5,7 +5,6 @@
 
 #include <algorithm>
 
-#include <google/protobuf/stubs/common.h>
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/extension_set.h>
 #include <google/protobuf/wire_format_lite.h>
@@ -33,7 +32,7 @@ static void InitDefaultsscc_info_TextMessage_quoil_2eproto() {
 }
 
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_TextMessage_quoil_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_TextMessage_quoil_2eproto}, {}};
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_TextMessage_quoil_2eproto}, {}};
 
 static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_quoil_2eproto[1];
 static constexpr ::PROTOBUF_NAMESPACE_ID::EnumDescriptor const** file_level_enum_descriptors_quoil_2eproto = nullptr;
@@ -56,7 +55,7 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::quoil::_TextMessage_default_instance_),
 };
 
-const char descriptor_table_protodef_quoil_2eproto[] =
+const char descriptor_table_protodef_quoil_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\013quoil.proto\022\005quoil\"4\n\013TextMessage\022\020\n\010u"
   "serName\030\001 \001(\t\022\023\n\013messageText\030\002 \001(\t2C\n\007Va"
   "ctube\0228\n\010TextChat\022\022.quoil.TextMessage\032\022."
@@ -84,14 +83,9 @@ namespace quoil {
 
 void TextMessage::InitAsDefaultInstance() {
 }
-class TextMessage::HasBitSetters {
+class TextMessage::_Internal {
  public:
 };
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int TextMessage::kUserNameFieldNumber;
-const int TextMessage::kMessageTextFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 TextMessage::TextMessage()
   : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
@@ -103,11 +97,11 @@ TextMessage::TextMessage(const TextMessage& from)
       _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   username_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (from.username().size() > 0) {
+  if (!from._internal_username().empty()) {
     username_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.username_);
   }
   messagetext_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (from.messagetext().size() > 0) {
+  if (!from._internal_messagetext().empty()) {
     messagetext_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.messagetext_);
   }
   // @@protoc_insertion_point(copy_constructor:quoil.TextMessage)
@@ -149,7 +143,6 @@ void TextMessage::Clear() {
   _internal_metadata_.Clear();
 }
 
-#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 const char* TextMessage::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
@@ -160,14 +153,18 @@ const char* TextMessage::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID
       // string userName = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8(mutable_username(), ptr, ctx, "quoil.TextMessage.userName");
+          auto str = _internal_mutable_username();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "quoil.TextMessage.userName"));
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
       // string messageText = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8(mutable_messagetext(), ptr, ctx, "quoil.TextMessage.messageText");
+          auto str = _internal_mutable_messagetext();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "quoil.TextMessage.messageText"));
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -190,103 +187,9 @@ failure:
   goto success;
 #undef CHK_
 }
-#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-bool TextMessage::MergePartialFromCodedStream(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-  // @@protoc_insertion_point(parse_start:quoil.TextMessage)
-  for (;;) {
-    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // string userName = 1;
-      case 1: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (10 & 0xFF)) {
-          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadString(
-                input, this->mutable_username()));
-          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-            this->username().data(), static_cast<int>(this->username().length()),
-            ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE,
-            "quoil.TextMessage.userName"));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
 
-      // string messageText = 2;
-      case 2: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (18 & 0xFF)) {
-          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadString(
-                input, this->mutable_messagetext()));
-          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-            this->messagetext().data(), static_cast<int>(this->messagetext().length()),
-            ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE,
-            "quoil.TextMessage.messageText"));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0) {
-          goto success;
-        }
-        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
-              input, tag, _internal_metadata_.mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:quoil.TextMessage)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:quoil.TextMessage)
-  return false;
-#undef DO_
-}
-#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-
-void TextMessage::SerializeWithCachedSizes(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:quoil.TextMessage)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // string userName = 1;
-  if (this->username().size() > 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->username().data(), static_cast<int>(this->username().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "quoil.TextMessage.userName");
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteStringMaybeAliased(
-      1, this->username(), output);
-  }
-
-  // string messageText = 2;
-  if (this->messagetext().size() > 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->messagetext().data(), static_cast<int>(this->messagetext().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "quoil.TextMessage.messageText");
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteStringMaybeAliased(
-      2, this->messagetext(), output);
-  }
-
-  if (_internal_metadata_.have_unknown_fields()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
-        _internal_metadata_.unknown_fields(), output);
-  }
-  // @@protoc_insertion_point(serialize_end:quoil.TextMessage)
-}
-
-::PROTOBUF_NAMESPACE_ID::uint8* TextMessage::InternalSerializeWithCachedSizesToArray(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
+::PROTOBUF_NAMESPACE_ID::uint8* TextMessage::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
   // @@protoc_insertion_point(serialize_to_array_start:quoil.TextMessage)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
@@ -294,28 +197,26 @@ void TextMessage::SerializeWithCachedSizes(
   // string userName = 1;
   if (this->username().size() > 0) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->username().data(), static_cast<int>(this->username().length()),
+      this->_internal_username().data(), static_cast<int>(this->_internal_username().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
       "quoil.TextMessage.userName");
-    target =
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteStringToArray(
-        1, this->username(), target);
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_username(), target);
   }
 
   // string messageText = 2;
   if (this->messagetext().size() > 0) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->messagetext().data(), static_cast<int>(this->messagetext().length()),
+      this->_internal_messagetext().data(), static_cast<int>(this->_internal_messagetext().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
       "quoil.TextMessage.messageText");
-    target =
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteStringToArray(
-        2, this->messagetext(), target);
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_messagetext(), target);
   }
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields(), target);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields(), target, stream);
   }
   // @@protoc_insertion_point(serialize_to_array_end:quoil.TextMessage)
   return target;
@@ -325,11 +226,6 @@ size_t TextMessage::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:quoil.TextMessage)
   size_t total_size = 0;
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    total_size +=
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
-        _internal_metadata_.unknown_fields());
-  }
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -338,16 +234,20 @@ size_t TextMessage::ByteSizeLong() const {
   if (this->username().size() > 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->username());
+        this->_internal_username());
   }
 
   // string messageText = 2;
   if (this->messagetext().size() > 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->messagetext());
+        this->_internal_messagetext());
   }
 
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
   int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
   SetCachedSize(cached_size);
   return total_size;
@@ -403,10 +303,6 @@ bool TextMessage::IsInitialized() const {
   return true;
 }
 
-void TextMessage::Swap(TextMessage* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
 void TextMessage::InternalSwap(TextMessage* other) {
   using std::swap;
   _internal_metadata_.Swap(&other->_internal_metadata_);

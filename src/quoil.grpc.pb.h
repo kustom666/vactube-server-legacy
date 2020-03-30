@@ -7,34 +7,24 @@
 #include "quoil.pb.h"
 
 #include <functional>
+#include <grpc/impl/codegen/port_platform.h>
 #include <grpcpp/impl/codegen/async_generic_service.h>
 #include <grpcpp/impl/codegen/async_stream.h>
 #include <grpcpp/impl/codegen/async_unary_call.h>
 #include <grpcpp/impl/codegen/client_callback.h>
 #include <grpcpp/impl/codegen/client_context.h>
 #include <grpcpp/impl/codegen/completion_queue.h>
+#include <grpcpp/impl/codegen/message_allocator.h>
 #include <grpcpp/impl/codegen/method_handler.h>
 #include <grpcpp/impl/codegen/proto_utils.h>
 #include <grpcpp/impl/codegen/rpc_method.h>
 #include <grpcpp/impl/codegen/server_callback.h>
+#include <grpcpp/impl/codegen/server_callback_handlers.h>
 #include <grpcpp/impl/codegen/server_context.h>
 #include <grpcpp/impl/codegen/service_type.h>
 #include <grpcpp/impl/codegen/status.h>
 #include <grpcpp/impl/codegen/stub_options.h>
 #include <grpcpp/impl/codegen/sync_stream.h>
-
-namespace grpc_impl {
-class CompletionQueue;
-class ServerCompletionQueue;
-class ServerContext;
-}  // namespace grpc_impl
-
-namespace grpc {
-namespace experimental {
-template <typename RequestT, typename ResponseT>
-class MessageAllocator;
-}  // namespace experimental
-}  // namespace grpc
 
 namespace quoil {
 
@@ -58,8 +48,18 @@ class Vactube final {
     class experimental_async_interface {
      public:
       virtual ~experimental_async_interface() {}
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void TextChat(::grpc::ClientContext* context, ::grpc::ClientBidiReactor< ::quoil::TextMessage,::quoil::TextMessage>* reactor) = 0;
+      #else
       virtual void TextChat(::grpc::ClientContext* context, ::grpc::experimental::ClientBidiReactor< ::quoil::TextMessage,::quoil::TextMessage>* reactor) = 0;
+      #endif
     };
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    typedef class experimental_async_interface async_interface;
+    #endif
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    async_interface* async() { return experimental_async(); }
+    #endif
     virtual class experimental_async_interface* experimental_async() { return nullptr; }
   private:
     virtual ::grpc::ClientReaderWriterInterface< ::quoil::TextMessage, ::quoil::TextMessage>* TextChatRaw(::grpc::ClientContext* context) = 0;
@@ -81,7 +81,11 @@ class Vactube final {
     class experimental_async final :
       public StubInterface::experimental_async_interface {
      public:
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void TextChat(::grpc::ClientContext* context, ::grpc::ClientBidiReactor< ::quoil::TextMessage,::quoil::TextMessage>* reactor) override;
+      #else
       void TextChat(::grpc::ClientContext* context, ::grpc::experimental::ClientBidiReactor< ::quoil::TextMessage,::quoil::TextMessage>* reactor) override;
+      #endif
      private:
       friend class Stub;
       explicit experimental_async(Stub* stub): stub_(stub) { }
@@ -133,9 +137,20 @@ class Vactube final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     ExperimentalWithCallbackMethod_TextChat() {
-      ::grpc::Service::experimental().MarkMethodCallback(0,
-        new ::grpc_impl::internal::CallbackBidiHandler< ::quoil::TextMessage, ::quoil::TextMessage>(
-          [this] { return this->TextChat(); }));
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodCallback(0,
+          new ::grpc_impl::internal::CallbackBidiHandler< ::quoil::TextMessage, ::quoil::TextMessage>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context) { return this->TextChat(context); }));
     }
     ~ExperimentalWithCallbackMethod_TextChat() override {
       BaseClassMustBeDerivedFromService(this);
@@ -145,10 +160,19 @@ class Vactube final {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    virtual ::grpc::experimental::ServerBidiReactor< ::quoil::TextMessage, ::quoil::TextMessage>* TextChat() {
-      return new ::grpc_impl::internal::UnimplementedBidiReactor<
-        ::quoil::TextMessage, ::quoil::TextMessage>;}
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerBidiReactor< ::quoil::TextMessage, ::quoil::TextMessage>* TextChat(
+      ::grpc::CallbackServerContext* /*context*/)
+    #else
+    virtual ::grpc::experimental::ServerBidiReactor< ::quoil::TextMessage, ::quoil::TextMessage>* TextChat(
+      ::grpc::experimental::CallbackServerContext* /*context*/)
+    #endif
+      { return nullptr; }
   };
+  #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+  typedef ExperimentalWithCallbackMethod_TextChat<Service > CallbackService;
+  #endif
+
   typedef ExperimentalWithCallbackMethod_TextChat<Service > ExperimentalCallbackService;
   template <class BaseClass>
   class WithGenericMethod_TextChat : public BaseClass {
@@ -193,9 +217,20 @@ class Vactube final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     ExperimentalWithRawCallbackMethod_TextChat() {
-      ::grpc::Service::experimental().MarkMethodRawCallback(0,
-        new ::grpc_impl::internal::CallbackBidiHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
-          [this] { return this->TextChat(); }));
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodRawCallback(0,
+          new ::grpc_impl::internal::CallbackBidiHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context) { return this->TextChat(context); }));
     }
     ~ExperimentalWithRawCallbackMethod_TextChat() override {
       BaseClassMustBeDerivedFromService(this);
@@ -205,9 +240,14 @@ class Vactube final {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    virtual ::grpc::experimental::ServerBidiReactor< ::grpc::ByteBuffer, ::grpc::ByteBuffer>* TextChat() {
-      return new ::grpc_impl::internal::UnimplementedBidiReactor<
-        ::grpc::ByteBuffer, ::grpc::ByteBuffer>;}
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerBidiReactor< ::grpc::ByteBuffer, ::grpc::ByteBuffer>* TextChat(
+      ::grpc::CallbackServerContext* /*context*/)
+    #else
+    virtual ::grpc::experimental::ServerBidiReactor< ::grpc::ByteBuffer, ::grpc::ByteBuffer>* TextChat(
+      ::grpc::experimental::CallbackServerContext* /*context*/)
+    #endif
+      { return nullptr; }
   };
   typedef Service StreamedUnaryService;
   typedef Service SplitStreamedService;

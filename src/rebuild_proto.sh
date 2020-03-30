@@ -1,2 +1,2 @@
-../build/_deps/grpc-build/third_party/protobuf/protoc -I ../protos --grpc_out=. --plugin=protoc-gen-grpc=../build/_deps/grpc-build/grpc_cpp_plugin ../protos/quoil.proto
-../build/_deps/grpc-build/third_party/protobuf/protoc -I ../protos --cpp_out=. ../protos/quoil.proto 
+/home/pforti/builds/vcpkg/installed/x64-linux/tools/protobuf/protoc -I ../protos --grpc_out=. --plugin=protoc-gen-grpc=/home/pforti/builds/vcpkg/installed/x64-linux/tools/grpc/grpc_cpp_plugin ../protos/quoil.proto
+/home/pforti/builds/vcpkg/installed/x64-linux/tools/protobuf/protoc -I ../protos --cpp_out=. ../protos/quoil.proto 
