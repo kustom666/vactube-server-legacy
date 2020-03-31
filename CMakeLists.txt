@@ -17,10 +17,14 @@ find_package(gRPC CONFIG REQUIRED)
 find_package(yaml-cpp CONFIG REQUIRED)
 find_package(protobuf CONFIG REQUIRED)
 find_package(cxxopts CONFIG REQUIRED)
+find_package(Pistache CONFIG REQUIRED)
 
 find_path(BOTAN_INCLUDE_DIR botan/botan.h)
 find_library(BOTAN_LIBRARY botan-2)
-add_executable(vactube-server src/server.cc src/quoil.grpc.pb.cc src/quoil.pb.cc)
-target_include_directories(vactube-server PRIVATE ${BOTAN_INCLUDE_DIR})
-target_link_libraries(vactube-server PRIVATE ${BOTAN_LIBRARY} cxxopts::cxxopts gRPC::gpr gRPC::grpc gRPC::grpc++ gRPC::grpc++_alts yaml-cpp protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite)
+
+find_path(PICOJSON_INCLUDE_DIR picojson/picojson.h)
+
+add_executable(vactube-server src/server.cc src/utilities.cc src/quoil.grpc.pb.cc src/quoil.pb.cc)
+target_include_directories(vactube-server PRIVATE ${BOTAN_INCLUDE_DIR} ${PICOJSON_INCLUDE_DIR})
+target_link_libraries(vactube-server PRIVATE ${BOTAN_LIBRARY} pistache_static gcov cxxopts::cxxopts gRPC::gpr gRPC::grpc gRPC::grpc++ gRPC::grpc++_alts yaml-cpp protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite)
 # target_link_libraries(vactube-server grpc++ yaml-cpp tink::static)

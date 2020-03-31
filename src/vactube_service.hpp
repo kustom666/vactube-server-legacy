@@ -1,3 +1,6 @@
+#ifndef QUOIL_VACTUBE_SERVICE
+#define QUOIL_VACTUBE_SERVICE
+
 #include "quoil.grpc.pb.h"
 
 class VactubeImpl final : public quoil::Vactube::Service {
@@ -18,3 +21,5 @@ class VactubeImpl final : public quoil::Vactube::Service {
   std::mutex mu_;
   std::vector<quoil::TextMessage> history_;
 };
+
+#endif
