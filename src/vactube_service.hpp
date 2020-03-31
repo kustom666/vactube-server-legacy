@@ -1,4 +1,5 @@
 #include "quoil.grpc.pb.h"
+
 class VactubeImpl final : public quoil::Vactube::Service {
   public:
   grpc::Status TextChat(grpc::ServerContext* context, grpc::ServerReaderWriter<quoil::TextMessage, quoil::TextMessage>* stream) override {

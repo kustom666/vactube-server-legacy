@@ -1,6 +1,0 @@
-server_name: "Paul's vactube server"
-server_address: "0.0.0.0:50051"
-ssl: 
-  key: "certs/key.pem"
-  crt: "certs/cert.pem"
-  ca: "certs/minica.pem"
