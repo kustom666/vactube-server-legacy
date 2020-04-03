@@ -1,5 +1,6 @@
 {
   "files.associations": {
+    "*.svelte": "html",
     "any": "cpp",
     "array": "cpp",
     "atomic": "cpp",
@@ -71,6 +72,8 @@
     "valarray": "cpp",
     "variant": "cpp",
     "bit": "cpp",
-    "typeindex": "cpp"
+    "typeindex": "cpp",
+    "xstring": "cpp",
+    "xutility": "cpp"
   }
 }
