@@ -12,6 +12,15 @@
 #include <botan/system_rng.h>
 #include <botan/pubkey.h>
 #include <yaml-cpp/yaml.h>
+#include <boost/log/core.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/expressions.hpp>
+#include <boost/log/sinks/text_file_backend.hpp>
+#include <boost/log/utility/setup/console.hpp>
+#include <boost/log/utility/setup/file.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/sources/severity_logger.hpp>
+#include <boost/log/sources/record_ostream.hpp>
 
 namespace Quoil {
   /***
@@ -35,6 +44,11 @@ namespace Quoil {
    *  - filename: the path to the file to read
    */
   std::string ReadFile(const std::string filename);
+
+  /**
+  * Sets up the boost logger with default parameters
+  */
+  void SetupLogging();
 }
 
 #endif

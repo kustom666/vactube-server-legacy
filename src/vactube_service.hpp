@@ -1,7 +1,11 @@
 #ifndef QUOIL_VACTUBE_SERVICE
 #define QUOIL_VACTUBE_SERVICE
 
+#include <boost/log/trivial.hpp>
+
 #include "quoil.grpc.pb.h"
+
+using namespace boost::log::trivial;
 
 class VactubeImpl final : public quoil::Vactube::Service {
   public:
@@ -11,7 +15,7 @@ class VactubeImpl final : public quoil::Vactube::Service {
       auto t = std::time(nullptr);
       auto tm = *std::localtime(&t);
       std::unique_lock<std::mutex> lock(mu_);
-      std::cout << std::put_time(&tm, "[%d-%m-%Y %H-%M-%S] ") << message.username() << ": " << message.messagetext() << std::endl;
+      BOOST_LOG_TRIVIAL(info) << "[Message] " << message.username() << ": " << message.messagetext();
       history_.push_back(message);
     }
     return grpc::Status::OK;

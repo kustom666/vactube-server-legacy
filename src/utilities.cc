@@ -1,5 +1,7 @@
 #include "utilities.hpp"
 
+namespace keywords = boost::log::keywords;
+
 namespace Quoil {
   void GenCerts(std::string pkey_filename, std::string cert_filename) {
     std::ofstream pkey_out(pkey_filename);
@@ -63,5 +65,23 @@ namespace Quoil {
     std::stringstream buffer;
     buffer << t.rdbuf();
     return buffer.str();
+  }
+
+  void SetupLogging() {
+    const char log_format[] = "[%TimeStamp%] %Message%";
+    boost::log::add_file_log(
+      keywords::file_name = "vactube_log_%N.txt",
+      keywords::rotation_size = 10 * 1024 * 1024,
+      keywords::time_based_rotation = boost::log::sinks::file::rotation_at_time_point(0,0,0),
+      keywords::format = log_format
+    );
+    boost::log::add_console_log(
+      std::cout,
+      keywords::format = log_format
+    );
+    boost::log::core::get()->set_filter(
+      boost::log::trivial::severity >= boost::log::trivial::info
+    );
+    boost::log::add_common_attributes();
   }
 }

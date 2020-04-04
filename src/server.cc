@@ -16,6 +16,8 @@
 #include "vactube_fileserve.hpp"
 #include "utilities.hpp"
 
+using namespace boost::log::trivial;
+
 int main(int argc, char **argv)
 {
   VactubeImpl service;
@@ -40,29 +42,40 @@ int main(int argc, char **argv)
     std::exit(0);
   }
 
+  // Logging Setup
+  Quoil::SetupLogging();
+
+  // Server rooms database setup
   leveldb::DB* db;
   leveldb::Options db_options;
   db_options.create_if_missing = true;
   leveldb::Status status = leveldb::DB::Open(db_options, "server.db", &db);
   if (!status.ok()) {
-      std::cerr << "Failed instantiating the server database" << std::endl;
+    BOOST_LOG_TRIVIAL(error) << "";
   }
 
+  // Reading the config from disk
   YAML::Node config;
   std::string server_address = "0.0.0.0";
   try {
-	config = YAML::LoadFile(args["config"].as<std::string>());
-	server_address = config["server_address"].as<std::string>();
+	  config = YAML::LoadFile(args["config"].as<std::string>());
+	  server_address = config["server_address"].as<std::string>();
   }
   catch (YAML::BadFile) {
-	std::cout << "Couldn't load the configuration file " + args["config"].as<std::string>() +
-		  " Check the file exists at that location. If you need to generate a config file, look at the generate option" << std::endl;
-	std::exit(1);
+    BOOST_LOG_TRIVIAL(error) << "Couldn't load the configuration file "
+      << args["config"].as<std::string>()
+      << " Check the file exists at that location. If you need to generate a config file, look at the generate option";
+	  std::exit(1);
   }
   catch (YAML::ParserException) {
-	std::cout << "The configuration file " + args["config"].as<std::string>() +
-		" Is incorrect or corrupted. Check that it's a valid yaml configuration file. If you need to generate a config file, look at the generate option" << std::endl;
-	std::exit(1);
+    BOOST_LOG_TRIVIAL(error) << "The configuration file " 
+      << args["config"].as<std::string>() 
+      << " Is incorrect or corrupted. Check that it's a valid yaml configuration file. If you need to generate a config file, look at the generate option";
+	  std::exit(1);
+  }
+  catch (...) {
+    BOOST_LOG_TRIVIAL(error) << "An unknown error happened when trying to read the configuration file";
+    std::exit(1);
   }
 
   // Start in secure mode
@@ -82,12 +95,12 @@ int main(int argc, char **argv)
   }
   else // start in insecure mode
   {
-	std::cout << "[Warning]: The text, voice and video server is starting in insecure mode. Insecure mode is for development purposes only, please use the generate option to create a secure environement" << std::endl;
+    BOOST_LOG_TRIVIAL(warning) << "The text, voice and video server is starting in insecure mode. Insecure mode is for development purposes only, please use the generate option to create a secure environement";
     builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
   }
   builder.RegisterService(&service);
   std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
-  std::cout << "Chat Server listening on " << server_address << std::endl;
+  BOOST_LOG_TRIVIAL(info) << "Chat Server listening on " << server_address;
 
   using discovery_server_t = restinio::http_server_t<restinio::default_traits_t>;
   discovery_server_t discovery_server{ restinio::own_io_context(), [config](auto &settings) {
