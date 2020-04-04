@@ -10,6 +10,7 @@
 #include <grpcpp/security/server_credentials.h>
 #include <cxxopts.hpp>
 #include <yaml-cpp/yaml.h>
+#include <leveldb/db.h>
 
 #include "vactube_service.hpp"
 #include "vactube_fileserve.hpp"
@@ -32,10 +33,19 @@ int main(int argc, char **argv)
     std::exit(0);
   }
 
+  // Generate a config file, TLS cert and exit
   if (args.count("generate"))
   {
     Quoil::SetupWizard();
     std::exit(0);
+  }
+
+  leveldb::DB* db;
+  leveldb::Options db_options;
+  db_options.create_if_missing = true;
+  leveldb::Status status = leveldb::DB::Open(db_options, "server.db", &db);
+  if (!status.ok()) {
+      std::cerr << "Failed instantiating the server database" << std::endl;
   }
 
   YAML::Node config;
@@ -55,6 +65,7 @@ int main(int argc, char **argv)
 	std::exit(1);
   }
 
+  // Start in secure mode
   if (config["ssl"].IsDefined())
   {
     std::string key = Quoil::ReadFile(config["ssl"]["key"].as<std::string>());
@@ -69,8 +80,9 @@ int main(int argc, char **argv)
     auto server_creds = grpc::SslServerCredentials(ssl_opts);
     builder.AddListeningPort(server_address, server_creds);
   }
-  else
+  else // start in insecure mode
   {
+	std::cout << "[Warning]: The text, voice and video server is starting in insecure mode. Insecure mode is for development purposes only, please use the generate option to create a secure environement" << std::endl;
     builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
   }
   builder.RegisterService(&service);
@@ -85,6 +97,7 @@ int main(int argc, char **argv)
 		  return discovery_handler(req, config);
 	  });
   } };
+
   std::thread restinio_control_thread{ [&discovery_server] {
 	restinio::run(restinio::on_thread_pool(4, restinio::skip_break_signal_handling(), discovery_server));
   } };
